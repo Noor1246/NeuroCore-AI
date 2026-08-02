@@ -1,5 +1,12 @@
-import ollama
-CURRENT_MODEL = "llama3.2:3b"
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url="https://openrouter.ai/api/v1",
+)
+
+CURRENT_MODEL = "meta-llama/llama-3.3-8b-instruct:free"
 
 class NeuroCoreLLM:
 
@@ -48,12 +55,12 @@ Current User Question:
 {question}
 """
 
-        response = ollama.chat(
+        response = client.chat.completions.create(
             model=CURRENT_MODEL,
             messages=[
                 {
                     "role": "system",
-                    "content": agent_prompt
+                    "content": "You are NeuroCore AI."
                 },
                 {
                     "role": "user",
@@ -62,7 +69,7 @@ Current User Question:
             ]
         )
 
-        return response["message"]["content"]
+        return response.choices[0].message.content
 
 
     def classify_route(
@@ -133,7 +140,7 @@ WEB
 GENERAL
 """
 
-        response = ollama.chat(
+        response = client.chat.completions.create(
             model=CURRENT_MODEL,
             messages=[
                 {
@@ -143,7 +150,7 @@ GENERAL
             ]
         )
 
-        decision = response["message"]["content"].strip().upper()
+        decision = response.choices[0].message.content.strip().upper()
 
         if decision not in [
             "DOCUMENT",
@@ -233,17 +240,21 @@ def hello():
     print("Hello")
 """
 
-        stream = ollama.chat(
+        stream = client.chat.completions.create(
             model=CURRENT_MODEL,
-            stream=True,
-            keep_alive="30m",
             messages=[
                 {
                     "role": "user",
                     "content": prompt
                 }
-            ]
+            ],
+            stream=True,
         )
 
         for chunk in stream:
-            yield chunk["message"]["content"]
+            if (
+                chunk.choices
+                and chunk.choices[0].delta
+                and chunk.choices[0].delta.content
+            ):
+                yield chunk.choices[0].delta.content
