@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import ChatSidebar from "@/components/ChatSidebar";
 import ChatBox from "@/components/ChatBox";
 import UploadBox from "@/components/UploadBox";
 import api from "@/lib/api";
-export default function ChatPage(){
+function ChatPageContent(){
     const searchParams = useSearchParams();
 
 const agent =
@@ -106,4 +106,12 @@ const agent =
 
     );
 
+}
+
+export default function ChatPage() {
+    return (
+        <Suspense fallback={<div className="text-white">Loading...</div>}>
+            <ChatPageContent />
+        </Suspense>
+    );
 }
