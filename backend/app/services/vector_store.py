@@ -1,11 +1,13 @@
 import chromadb
 from app.ai.embedding_model import get_embedding_model
+
 client = chromadb.PersistentClient(
     path="chroma_db"
 )
 
 collection = client.get_or_create_collection(
-    name="documents"
+    name="documents",
+    embedding_function=None
 )
 
 
