@@ -1,4 +1,5 @@
 import chromadb
+
 from app.ai.embedding_model import get_embedding
 
 client = chromadb.PersistentClient(
