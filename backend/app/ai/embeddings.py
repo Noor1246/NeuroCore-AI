@@ -1,17 +1,10 @@
-from sentence_transformers import SentenceTransformer
+from app.ai.embedding_model import get_embedding_model
 
 
 class EmbeddingEngine:
 
     def __init__(self):
+        self.model = get_embedding_model()
 
-        self.model = SentenceTransformer(
-            "all-MiniLM-L6-v2"
-        )
-
-
-    def create_embedding(self,text):
-
-        return self.model.encode(
-            text
-        ).tolist()
+    def create_embedding(self, text):
+        return self.model.encode(text).tolist()

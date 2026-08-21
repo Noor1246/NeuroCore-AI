@@ -1,6 +1,5 @@
 import chromadb
-from sentence_transformers import SentenceTransformer
-
+from app.ai.embedding_model import get_embedding_model
 client = chromadb.PersistentClient(
     path="chroma_db"
 )
@@ -9,9 +8,7 @@ collection = client.get_or_create_collection(
     name="documents"
 )
 
-embedding_model = SentenceTransformer(
-    "all-MiniLM-L6-v2"
-)
+
 
 
 def store_embeddings(
@@ -98,6 +95,8 @@ def search_documents(
     conversation_id: int,
     n_results: int = 8
 ):
+
+    embedding_model = get_embedding_model()
 
     question_embedding = embedding_model.encode(
         question

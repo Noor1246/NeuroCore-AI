@@ -1,5 +1,5 @@
 import chromadb
-from sentence_transformers import SentenceTransformer
+from app.ai.embedding_model import get_embedding_model
 
 client = chromadb.PersistentClient(
     path="memory_db"
@@ -9,9 +9,7 @@ collection = client.get_or_create_collection(
     name="conversation_memory"
 )
 
-embedding_model = SentenceTransformer(
-    "all-MiniLM-L6-v2"
-)
+
 
 
 def store_memory(
@@ -20,7 +18,7 @@ def store_memory(
     content: str,
     message_id: int
 ):
-
+    embedding_model = get_embedding_model()
     embedding = embedding_model.encode(
         content
     ).tolist()
