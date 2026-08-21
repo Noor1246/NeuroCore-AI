@@ -96,7 +96,7 @@ def store_embeddings(
 def search_documents(
     question: str,
     conversation_id: int,
-    n_results: int = 5
+    n_results: int = 8
 ):
 
     question_embedding = embedding_model.encode(

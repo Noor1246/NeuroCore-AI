@@ -1,12 +1,15 @@
 import os
+from dotenv import load_dotenv
 from openai import OpenAI
+
+load_dotenv()
 
 client = OpenAI(
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",
 )
 
-CURRENT_MODEL = "meta-llama/llama-3.3-8b-instruct:free"
+CURRENT_MODEL = "nvidia/nemotron-3.5-lightning:free"
 
 class NeuroCoreLLM:
 

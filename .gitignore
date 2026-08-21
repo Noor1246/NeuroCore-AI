@@ -39,3 +39,23 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Local databases
+backend/chroma_db/
+backend/memory_db/
+
+# Uploaded files
+backend/uploads/
+
+# OS
+.DS_Store
