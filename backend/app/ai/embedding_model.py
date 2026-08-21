@@ -16,7 +16,7 @@ import hashlib
 import math
 
 
-EMBEDDING_DIMENSION = 256
+EMBEDDING_DIMENSION = 384
 
 
 def get_embedding(text: str):
