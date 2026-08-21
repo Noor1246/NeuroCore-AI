@@ -1,58 +1,62 @@
-import ollama
-
-
 def should_store_memory(message: str) -> bool:
+    message = message.strip().lower()
 
-    prompt = f"""
-You decide whether a user's message should be stored as long-term memory.
+    # Ignore empty or very short messages
+    if len(message) < 10:
+        return False
 
-Store ONLY if it contains information likely to be useful in future conversations.
+    # Messages that are generally temporary/conversational
+    ignored_phrases = {
+        "hello",
+        "hi",
+        "hey",
+        "thanks",
+        "thank you",
+        "okay",
+        "ok",
+        "yes",
+        "no",
+        "sure",
+        "fine",
+        "good",
+        "great",
+        "cool",
+        "bye",
+        "goodbye",
+    }
 
-Examples to STORE:
+    if message in ignored_phrases:
+        return False
 
-- Personal preferences
-- Goals
-- Ongoing projects
-- Skills
-- Occupation
-- Education
-- Important plans
-- Long-term facts
+    # Strong indicators of information worth remembering
+    memory_keywords = [
+        "i am",
+        "i'm",
+        "my name",
+        "i study",
+        "i work",
+        "i live",
+        "i like",
+        "i love",
+        "i prefer",
+        "i want",
+        "i need",
+        "my goal",
+        "my project",
+        "i am working",
+        "i'm working",
+        "i'm preparing",
+        "i am preparing",
+        "i use",
+        "i know",
+        "i learned",
+        "i'm learning",
+        "i am learning",
+        "my skills",
+        "my experience",
+        "my plan",
+        "i plan",
+        "i will",
+    ]
 
-Examples to IGNORE:
-
-- Greetings
-- Thanks
-- Okay
-- Yes
-- No
-- Short questions
-- Temporary requests
-- Small talk
-
-User message:
-
-{message}
-
-Reply with exactly one word:
-
-YES
-
-or
-
-NO
-"""
-
-    response = ollama.chat(
-        model="llama3.2:3b",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
-
-    decision = response["message"]["content"].strip().upper()
-
-    return decision == "YES"
+    return any(keyword in message for keyword in memory_keywords)
