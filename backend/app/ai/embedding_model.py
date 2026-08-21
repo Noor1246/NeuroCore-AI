@@ -1,14 +1,14 @@
-from sentence_transformers import SentenceTransformer
+import os
+from dotenv import load_dotenv
+from openai import OpenAI
 
-_model = None
+load_dotenv()
 
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def get_embedding_model():
-    global _model
-
-    if _model is None:
-        print("Loading embedding model...")
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-        print("Embedding model loaded.")
-
-    return _model
+def get_embedding(text: str):
+    response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=text
+    )
+    return response.data[0].embedding

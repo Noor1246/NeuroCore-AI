@@ -1,5 +1,5 @@
 import chromadb
-from app.ai.embedding_model import get_embedding_model
+from app.ai.embedding_model import get_embedding
 
 client = chromadb.PersistentClient(
     path="chroma_db"
@@ -9,8 +9,6 @@ collection = client.get_or_create_collection(
     name="documents",
     embedding_function=None
 )
-
-
 
 
 def store_embeddings(
@@ -25,9 +23,7 @@ def store_embeddings(
     remove every previous document in that conversation.
     """
 
-    # Delete ALL existing documents in this conversation
     try:
-
         existing = collection.get(
             where={
                 "conversation_id": conversation_id
@@ -35,7 +31,6 @@ def store_embeddings(
         )
 
         if existing["ids"]:
-
             collection.delete(
                 ids=existing["ids"]
             )
@@ -45,7 +40,6 @@ def store_embeddings(
             )
 
     except Exception as e:
-
         print("Delete error:", e)
 
     ids = []
@@ -62,29 +56,20 @@ def store_embeddings(
         documents.append(chunk)
 
         vectors.append(
-            embeddings[i].tolist()
+            embeddings[i]
         )
 
         metadatas.append({
-
             "source": filename,
-
             "chunk": i,
-
             "conversation_id": conversation_id
-
         })
 
     collection.add(
-
         ids=ids,
-
         documents=documents,
-
         embeddings=vectors,
-
         metadatas=metadatas
-
     )
 
     print(
@@ -98,32 +83,20 @@ def search_documents(
     n_results: int = 8
 ):
 
-    embedding_model = get_embedding_model()
-
-    question_embedding = embedding_model.encode(
-        question
-    ).tolist()
+    question_embedding = get_embedding(question)
 
     results = collection.query(
-
         query_embeddings=[
             question_embedding
         ],
-
         n_results=n_results,
-
         where={
             "conversation_id": conversation_id
         }
-
     )
 
     return {
-
         "documents": results["documents"],
-
         "distances": results["distances"],
-
         "metadatas": results["metadatas"]
-
     }

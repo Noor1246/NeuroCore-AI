@@ -1,13 +1,5 @@
-from app.core.embeddings import get_embedding_model
-
+from app.ai.embedding_model import get_embedding
 
 def create_embeddings(chunks):
-
-    model = get_embedding_model()
-
-    embeddings = model.encode(
-        chunks,
-        convert_to_numpy=True
-    )
-
+    embeddings = [get_embedding(chunk) for chunk in chunks]
     return embeddings

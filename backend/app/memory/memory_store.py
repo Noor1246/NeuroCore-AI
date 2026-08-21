@@ -1,14 +1,14 @@
 import chromadb
-from app.ai.embedding_model import get_embedding_model
+from app.ai.embedding_model import get_embedding
 
 client = chromadb.PersistentClient(
     path="memory_db"
 )
 
 collection = client.get_or_create_collection(
-    name="conversation_memory"
+    name="conversation_memory",
+    embedding_function=None
 )
-
 
 
 
@@ -18,10 +18,7 @@ def store_memory(
     content: str,
     message_id: int
 ):
-    embedding_model = get_embedding_model()
-    embedding = embedding_model.encode(
-        content
-    ).tolist()
+    embedding = get_embedding(content)
 
     collection.add(
 
